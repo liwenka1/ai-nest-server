@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpException } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { GenerationParams } from './images.service';
 
@@ -6,16 +6,13 @@ import { GenerationParams } from './images.service';
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Post('generations')
-  async generateImage(@Body() params: GenerationParams) {
-    const result = await this.imagesService.generations({
-      ...params
-    });
+  @Post('/bigmodel/generations')
+  async bigmodelGenerateImage(@Body() params: GenerationParams) {
+    return this.imagesService.bigmodelGenerations(params);
+  }
 
-    if (result.status >= 400) {
-      throw new HttpException(result.data, result.status);
-    }
-
-    return result.data;
+  @Post('/siliconflow/generations')
+  async siliconflowGenerateImage(@Body() params: GenerationParams) {
+    return this.imagesService.siliconflowGenerations(params);
   }
 }
