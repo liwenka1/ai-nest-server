@@ -3,23 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { lastValueFrom } from 'rxjs'; // 新增导入
-
-export interface GenerationParams {
-  model: string;
-  prompt: string;
-  negative_prompt?: string;
-  image_size: string;
-  batch_size: number;
-  seed: number;
-  num_inference_steps: number;
-  guidance_scale: number;
-  image?: string;
-}
-
-export interface GenerationResponse {
-  status: number;
-  data: any;
-}
+import { GenerationParams, GenerationResult } from './types';
 
 @Injectable()
 export class ImagesService {
@@ -28,14 +12,14 @@ export class ImagesService {
     private readonly configService: ConfigService
   ) {}
 
-  async bigmodelGenerations(params: GenerationParams): Promise<GenerationResponse> {
+  async bigmodelGenerations(params: GenerationParams): Promise<GenerationResult> {
     const apiUrl = `${this.configService.get('BIGMODEL_API_BASE_URL')}/images/generations`;
     const apiKey = `${this.configService.get('BIGMODEL_API_KEY')}`;
 
     try {
       // 使用 lastValueFrom 替代 toPromise
       const response = await lastValueFrom(
-        this.httpService.post(apiUrl, params, {
+        this.httpService.post<GenerationResult>(apiUrl, params, {
           headers: {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json'
@@ -53,14 +37,14 @@ export class ImagesService {
     }
   }
 
-  async siliconflowGenerations(params: GenerationParams): Promise<GenerationResponse> {
+  async siliconflowGenerations(params: GenerationParams): Promise<GenerationResult> {
     const apiUrl = `${this.configService.get('SILICONFLOW_API_BASE_URL')}/images/generations`;
     const apiKey = `${this.configService.get('SILICONFLOW_API_KEY')}`;
 
     try {
       // 使用 lastValueFrom 替代 toPromise
       const response = await lastValueFrom(
-        this.httpService.post(apiUrl, params, {
+        this.httpService.post<GenerationResult>(apiUrl, params, {
           headers: {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json'

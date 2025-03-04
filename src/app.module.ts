@@ -4,13 +4,14 @@ import { AppService } from './app.service';
 import { ImagesModule } from './images/images.module';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }), // 加载.env文件
-    HttpModule, // 注入HttpServiceImagesModule
-    ImagesModule
+    HttpModule,
+    ImagesModule,
+    VideosModule
   ],
   controllers: [AppController],
   providers: [AppService]

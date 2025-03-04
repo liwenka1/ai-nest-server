@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ImagesService } from './images.service';
-import { GenerationParams } from './images.service';
+import { GenerationParams } from './types';
 
 @Controller('images')
 export class ImagesController {
