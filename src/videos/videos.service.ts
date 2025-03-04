@@ -36,4 +36,30 @@ export class VideosService {
       );
     }
   }
+
+  async bigmodelGenerationsResult(id: string): Promise<GenerationResult> {
+    const apiUrl = `${this.configService.get('BIGMODEL_API_BASE_URL')}/async-result/${id}`; // 注意路径修正
+
+    const apiKey = `${this.configService.get('BIGMODEL_API_KEY')}`;
+
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get<GenerationResult>(apiUrl, {
+          // 使用 get 方法
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        })
+      );
+
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      throw new HttpException(
+        axiosError.response?.data || { error: 'API request failed' },
+        axiosError.response?.status || 500
+      );
+    }
+  }
 }
