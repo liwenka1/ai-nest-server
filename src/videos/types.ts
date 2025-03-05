@@ -1,3 +1,5 @@
+import { Method } from 'axios';
+
 export interface GenerationParams {
   model: string;
   prompt: string;
@@ -15,4 +17,15 @@ export interface GenerationResult {
   data: Array<{
     url: string;
   }>;
+}
+
+export enum ApiEndpoint {
+  GENERATIONS = '/videos/generations',
+  ASYNC_RESULT = '/async-result'
+}
+
+export interface RequestConfig<T = unknown> {
+  method: Method;
+  url: string;
+  data?: T;
 }

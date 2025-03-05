@@ -1,65 +1,34 @@
-import { HttpService } from '@nestjs/axios';
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AxiosError } from 'axios';
-import { lastValueFrom } from 'rxjs';
-import { GenerationParams, GenerationResult } from './types';
+import { ApiEndpoint, GenerationParams, GenerationResult } from './types';
+import { ApiConfig, ApiType } from 'src/common/api.config';
+import { HttpClientService } from 'src/common/http-client.service';
 
 @Injectable()
 export class VideosService {
+  private readonly apiConfig: ApiConfig;
+
   constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService
-  ) {}
+    private readonly httpClient: HttpClientService,
+    configService: ConfigService
+  ) {
+    this.apiConfig = new ApiConfig(configService);
+  }
 
   async bigmodelGenerations(params: GenerationParams): Promise<GenerationResult> {
-    const apiUrl = `${this.configService.get('BIGMODEL_API_BASE_URL')}/videos/generations`;
-    const apiKey = `${this.configService.get('BIGMODEL_API_KEY')}`;
-
-    try {
-      // 使用 lastValueFrom 替代 toPromise
-      const response = await lastValueFrom(
-        this.httpService.post<GenerationResult>(apiUrl, params, {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        })
-      );
-
-      return response.data;
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      throw new HttpException(
-        axiosError.response?.data || { error: 'API request failed' },
-        axiosError.response?.status || 500
-      );
-    }
+    return this.httpClient.request<GenerationResult, GenerationParams>(
+      this.apiConfig.getConfig(ApiType.BIGMODEL),
+      '/videos/generations',
+      'POST',
+      params
+    );
   }
 
   async bigmodelGenerationsResult(id: string): Promise<GenerationResult> {
-    const apiUrl = `${this.configService.get('BIGMODEL_API_BASE_URL')}/async-result/${id}`; // 注意路径修正
-
-    const apiKey = `${this.configService.get('BIGMODEL_API_KEY')}`;
-
-    try {
-      const response = await lastValueFrom(
-        this.httpService.get<GenerationResult>(apiUrl, {
-          // 使用 get 方法
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        })
-      );
-
-      return response.data;
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      throw new HttpException(
-        axiosError.response?.data || { error: 'API request failed' },
-        axiosError.response?.status || 500
-      );
-    }
+    return this.httpClient.request<GenerationResult>(
+      this.apiConfig.getConfig(ApiType.BIGMODEL),
+      `${ApiEndpoint.ASYNC_RESULT}/${id}`,
+      'GET'
+    );
   }
 }

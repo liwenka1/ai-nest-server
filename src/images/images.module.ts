@@ -1,20 +1,12 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { ImagesController } from './images.controller';
-import { ProxyMiddleware } from '../middleware/proxy.middleware';
-import { RequestMethod } from '@nestjs/common'; // 新增导入
 import { HttpModule } from '@nestjs/axios';
+import { HttpClientService } from 'src/common/http-client.service';
 
 @Module({
   imports: [HttpModule],
   controllers: [ImagesController],
-  providers: [ImagesService]
+  providers: [ImagesService, HttpClientService]
 })
-export class ImagesModule {
-  // // 实现 NestModule 接口
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(ProxyMiddleware).forRoutes(
-  //     { path: '*', method: RequestMethod.POST } // 精确匹配所有 POST 请求
-  //   );
-  // }
-}
+export class ImagesModule {}
