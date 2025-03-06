@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GenerationParams, GenerationResult } from './types';
+import { BigmodelGenerationsParams, GenerationParams, GenerationResult } from './types';
 import { ApiConfig, ApiType } from 'src/common/api.config';
 import { HttpClientService } from 'src/common/http-client.service';
 
@@ -15,21 +15,21 @@ export class ImagesService {
     this.apiConfig = new ApiConfig(configService);
   }
 
-  async bigmodelGenerations(params: GenerationParams): Promise<GenerationResult> {
+  async bigmodelGenerations(params: BigmodelGenerationsParams): Promise<GenerationResult> {
     return this.httpClient.request<GenerationResult, GenerationParams>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
       '/images/generations',
       'POST',
-      params
+      { model: 'cogview-3-flash', ...params }
     );
   }
 
-  async siliconflowGenerations(params: GenerationParams): Promise<GenerationResult> {
+  async siliconflowGenerations(params: BigmodelGenerationsParams): Promise<GenerationResult> {
     return this.httpClient.request<GenerationResult, GenerationParams>(
       this.apiConfig.getConfig(ApiType.SILICONFLOW),
       '/images/generations',
       'POST',
-      params
+      { model: 'Kwai-Kolors/Kolors', ...params }
     );
   }
 }

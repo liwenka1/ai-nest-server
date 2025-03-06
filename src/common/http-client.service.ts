@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
-import { AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig, Method } from 'axios';
 import { lastValueFrom } from 'rxjs';
 
 type ApiConfig = {
@@ -18,12 +18,7 @@ export class HttpClientService {
 
   async request<T, D>(config: ApiConfig, endpoint: string, method: 'POST', data: D): Promise<T>;
 
-  async request<T = any, D = any>(
-    config: ApiConfig,
-    endpoint: string,
-    method: 'GET' | 'POST' = 'POST',
-    data?: D
-  ): Promise<T> {
+  async request<T = any, D = any>(config: ApiConfig, endpoint: string, method: Method = 'POST', data?: D): Promise<T> {
     const url = `${config.baseUrl}${endpoint}`;
     const axiosConfig: AxiosRequestConfig<D> = {
       method,

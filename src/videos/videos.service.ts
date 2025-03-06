@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiEndpoint, GenerationParams, GenerationResult } from './types';
+import { ApiEndpoint, BigmodelGenerationsParams, GenerationParams, GenerationResult } from './types';
 import { ApiConfig, ApiType } from 'src/common/api.config';
 import { HttpClientService } from 'src/common/http-client.service';
 
@@ -15,12 +15,12 @@ export class VideosService {
     this.apiConfig = new ApiConfig(configService);
   }
 
-  async bigmodelGenerations(params: GenerationParams): Promise<GenerationResult> {
+  async bigmodelGenerations(params: BigmodelGenerationsParams): Promise<GenerationResult> {
     return this.httpClient.request<GenerationResult, GenerationParams>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
       '/videos/generations',
       'POST',
-      params
+      { model: 'cogvideox-flash', ...params }
     );
   }
 

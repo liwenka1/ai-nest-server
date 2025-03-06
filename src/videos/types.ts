@@ -29,3 +29,14 @@ export interface RequestConfig<T = unknown> {
   url: string;
   data?: T;
 }
+
+export interface BigmodelGenerationsParams {
+  prompt: string;
+  negative_prompt?: string;
+  image_size: string;
+  batch_size: number;
+  seed: number;
+  num_inference_steps: number;
+  guidance_scale: number;
+  image?: string;
+}
