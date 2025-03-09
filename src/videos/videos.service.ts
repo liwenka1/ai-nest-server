@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiEndpoint, BigmodelGenerationsParams, GenerationParams, GenerationResult } from './types';
-import { ApiConfig, ApiType } from 'src/common/api.config';
-import { HttpClientService } from 'src/common/http-client.service';
+import { ApiConfig, ApiType } from '../common/api.config';
+import { HttpClientService } from '../common/http-client.service';
 
 @Injectable()
 export class VideosService {
