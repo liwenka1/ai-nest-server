@@ -11,6 +11,8 @@ async function bootstrap() {
   // 注册全局过滤器（处理错误响应）
   app.useGlobalFilters(new GlobalExceptionFilter());
 
+  app.enableCors();
+
   await app.listen(process.env.PORT ?? 5000);
 }
 bootstrap()
