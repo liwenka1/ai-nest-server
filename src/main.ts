@@ -11,11 +11,11 @@ async function bootstrap() {
   // 注册全局过滤器（处理错误响应）
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 5000);
 }
 bootstrap()
   .then(() => {
-    console.log(`🚀 Server ready at http://localhost:${process.env.PORT ?? 3000}`);
+    console.log(`🚀 Server ready at http://localhost:${process.env.PORT ?? 5000}`);
     console.log(`✨ Environment: ${process.env.NODE_ENV || 'development'}`);
   })
   .catch((err) => {
