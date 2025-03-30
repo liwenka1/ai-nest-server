@@ -15,7 +15,19 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String
+  password String // 使用bcrypt等加密存储
+  vip      UserVip? // 一对一可选关系
+}
+
+model UserVip {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  level     Int // VIP等级（1: 普通VIP, 2: 高级VIP等）
+  expiresAt DateTime // VIP过期时间
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

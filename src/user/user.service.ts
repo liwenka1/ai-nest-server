@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
 
+type UserWithVip = Prisma.UserGetPayload<{
+  include: {
+    vip: true;
+  };
+}>;
+
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -46,6 +52,65 @@ export class UserService {
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
     return this.prisma.user.delete({
       where
+    });
+  }
+
+  // 获取用户VIP状态
+  async getVipStatus(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { vip: true }
+    });
+
+    if (!user?.vip) return { isVip: false };
+
+    const isActive = user.vip.expiresAt > new Date();
+    return {
+      isVip: isActive,
+      level: isActive ? user.vip.level : 0,
+      expiresAt: user.vip.expiresAt
+    };
+  }
+
+  // 设置/更新VIP
+  async updateVip(userId: number, level: number, durationDays: number) {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + durationDays);
+
+    await this.prisma.userVip.upsert({
+      where: { userId },
+      update: { level, expiresAt },
+      create: {
+        userId,
+        level,
+        expiresAt
+      }
+    });
+  }
+
+  async createUserWithVip(
+    userData: Prisma.UserCreateInput,
+    vipData: {
+      level: number;
+      durationDays: number;
+    }
+  ): Promise<UserWithVip> {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + vipData.durationDays);
+
+    return this.prisma.user.create({
+      data: {
+        ...userData,
+        vip: {
+          create: {
+            level: vipData.level,
+            expiresAt: expiresAt
+          }
+        }
+      },
+      include: {
+        vip: true
+      }
     });
   }
 }
