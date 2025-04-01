@@ -13,10 +13,9 @@ declare module 'express' {
 
 // JWT 负载类型定义
 export interface JwtPayload {
-  sub: string; // 用户ID
-  email: string; // 用户邮箱
-  iat?: number; // 签发时间
-  exp?: number; // 过期时间
+  sub: string;
+  email: string;
+  name: string;
 }
 
 @Injectable()
@@ -49,7 +48,8 @@ export class AuthGuard implements CanActivate {
       // 类型安全赋值
       request.user = {
         sub: payload.sub,
-        email: payload.email
+        email: payload.email,
+        name: payload.name
       };
     } catch (error) {
       throw new UnauthorizedException(this.getErrorMessage(error));
