@@ -1,25 +1,35 @@
-import { IsEmail, IsInt, IsString, Min, Max, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsEmail, IsInt, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 
-export class CreateUserWithVipDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+// 显式导出 VipDto
+export class VipDto {
+  @IsInt({ message: 'VIP等级必须是数字' })
+  level!: number; // 明确非空断言
 
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+  @IsInt({ message: '有效期天数必须是数字' })
+  durationDays!: number;
+}
 
-  @IsString()
-  @IsNotEmpty()
-  @Min(8)
-  password: string;
+export class CreateUserDto {
+  @IsEmail({}, { message: '邮箱格式不正确' })
+  email!: string;
 
-  @IsInt()
-  @Min(0)
-  @Max(3) // 假设VIP等级为1-3
-  vipLevel: number;
+  @IsNotEmpty({ message: '用户名不能为空' })
+  name!: string;
 
-  @IsInt()
-  @Min(1) // 最少1天有效期
-  vipDurationDays: number;
+  @IsNotEmpty({ message: '密码不能为空' })
+  password!: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => VipDto)
+  vip?: VipDto;
+}
+
+export class UpdateVipDto {
+  @IsInt({ message: 'VIP等级必须是数字' })
+  level!: number;
+
+  @IsInt({ message: '有效期天数必须是数字' })
+  durationDays!: number;
 }

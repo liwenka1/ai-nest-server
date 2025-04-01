@@ -15,19 +15,22 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  name     String
-  password String // 使用bcrypt等加密存储
-  vip      UserVip? // 一对一可选关系
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  name         String
+  password     String
+  vipLevel     Int          @default(0) // 0=普通用户，1=VIP1，2=VIP2
+  vipExpiresAt DateTime? // VIP过期时间
+  dailyUsage   DailyUsage[]
 }
 
-model UserVip {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  user      User     @relation(fields: [userId], references: [id])
-  level     Int // VIP等级（1: 普通VIP, 2: 高级VIP等）
-  expiresAt DateTime // VIP过期时间
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model DailyUsage {
+  id         Int    @id @default(autoincrement())
+  userId     Int
+  user       User   @relation(fields: [userId], references: [id])
+  date       String @db.VarChar(10) // 存储日期字符串如 "2023-12-31"
+  imageCount Int    @default(0)
+  videoCount Int    @default(0)
+
+  @@unique([userId, date]) // 唯一约束确保每天一条记录
 }

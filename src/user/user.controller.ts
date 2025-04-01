@@ -1,23 +1,33 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
 import { Public } from '../auth/constants';
-import { CreateUserWithVipDto } from './user.dto';
+import { CreateUserDto, UpdateVipDto } from './user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/search')
-  search(
-    @Body()
-    params: Prisma.UserWhereUniqueInput
-  ) {
-    return this.userService.user(params);
+  @Post()
+  @Public()
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createUserWithVip(
+      {
+        email: createUserDto.email,
+        name: createUserDto.name,
+        password: createUserDto.password // 确保服务层已处理密码加密
+      },
+      createUserDto.vip
+    );
   }
 
-  @Post('/searchAll')
-  searchAll(
+  @Get(':id')
+  async getUser(@Param('id') id: string) {
+    return this.userService.findUser({ id: Number(id) });
+  }
+
+  @Get()
+  listUsers(
     @Body()
     params: {
       skip?: number;
@@ -27,26 +37,34 @@ export class UserController {
       orderBy?: Prisma.UserOrderByWithRelationInput;
     }
   ) {
-    return this.userService.users(params);
+    return this.userService.findUsers(params);
   }
 
-  @Public()
-  @Post('create-with-vip')
-  async createUserWithVip(@Body() createDto: CreateUserWithVipDto) {
-    // 解构DTO参数
-    const { email, name, password, vipLevel, vipDurationDays } = createDto;
+  @Put(':id')
+  async updateUser(@Param('id') id: string, @Body() data: Prisma.UserUpdateInput) {
+    return this.userService.updateUser({
+      where: { id: Number(id) },
+      data
+    });
+  }
 
-    // 调用服务层方法
-    return this.userService.createUserWithVip(
-      {
-        email,
-        name,
-        password // 注意：服务层应该处理密码加密
-      },
-      {
-        level: vipLevel,
-        durationDays: vipDurationDays
-      }
-    );
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser({ id: Number(id) });
+  }
+
+  @Get(':id/vip-status')
+  async getVipStatus(@Param('id') id: string) {
+    return this.userService.getVipStatus(Number(id));
+  }
+
+  @Put(':id/vip')
+  async updateVipStatus(@Param('id') id: string, @Body() updateVipDto: UpdateVipDto) {
+    return this.userService.updateVip(Number(id), updateVipDto.level, updateVipDto.durationDays);
+  }
+
+  @Get(':id/usage')
+  async getUsage(@Param('id') id: string) {
+    return this.userService.getDailyUsage(Number(id));
   }
 }
