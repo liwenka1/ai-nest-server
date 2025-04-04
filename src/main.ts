@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { TransformInterceptor } from './filter/transform-interceptor';
 import { GlobalExceptionFilter } from './filter/http-exception.filter';
 import { json, urlencoded } from 'express';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,15 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '50mb' }));
 
   app.enableCors();
+
+  // 启用全局验证管道
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // 自动过滤未定义的属性
+      forbidNonWhitelisted: true, // 抛出错误如果有未定义的属性
+      transform: true // 自动类型转换
+    })
+  );
 
   await app.listen(process.env.PORT ?? 5000);
 }

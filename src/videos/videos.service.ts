@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiEndpoint, BigmodelGenerationsParams, GenerationParams, GenerationResult } from './types';
 import { ApiConfig, ApiType } from '../common/api.config';
 import { HttpClientService } from '../common/http-client.service';
+import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dot';
+import { GenerationResult, ApiEndpoint } from './videos.types';
 
 @Injectable()
 export class VideosService {
@@ -15,19 +16,24 @@ export class VideosService {
     this.apiConfig = new ApiConfig(configService);
   }
 
-  async bigmodelGenerations(params: BigmodelGenerationsParams): Promise<GenerationResult> {
-    return this.httpClient.request<GenerationResult, GenerationParams>(
+  async bigmodelGenerations(params: BigmodelVideoGenerationDTO): Promise<GenerationResult> {
+    return this.httpClient.request<GenerationResult, { model: string }>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
-      '/videos/generations',
+      ApiEndpoint.GENERATIONS, // 使用枚举值
       'POST',
-      { model: 'cogvideox-flash', ...params }
+      {
+        model: 'cogvideox-flash',
+        ...params
+        // 如果存在模型版本参数
+        // ...(model_version && { model: `${cleanParams.model}-${model_version}` })
+      }
     );
   }
 
-  async bigmodelGenerationsResult(id: string): Promise<GenerationResult> {
+  async bigmodelGenerationsResult(params: AsyncResultDTO): Promise<GenerationResult> {
     return this.httpClient.request<GenerationResult>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
-      `${ApiEndpoint.ASYNC_RESULT}/${id}`,
+      `${ApiEndpoint.ASYNC_RESULT}/${params.id}`,
       'GET'
     );
   }
