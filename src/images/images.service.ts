@@ -4,6 +4,7 @@ import { GenerationResult } from './images.types';
 import { ApiConfig, ApiType } from '../common/api.config';
 import { HttpClientService } from '../common/http-client.service';
 import { BigmodelGenerationDTO, SiliconflowGenerationDTO } from './images.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ImagesService {
@@ -11,12 +12,15 @@ export class ImagesService {
 
   constructor(
     private readonly httpClient: HttpClientService,
+    private readonly userService: UserService,
     configService: ConfigService
   ) {
     this.apiConfig = new ApiConfig(configService);
   }
 
-  async bigmodelGenerations(params: BigmodelGenerationDTO): Promise<GenerationResult> {
+  async bigmodelGenerations(userId: number, params: BigmodelGenerationDTO): Promise<GenerationResult> {
+    await this.userService.checkUsage(userId, 'image');
+
     return this.httpClient.request<GenerationResult, BigmodelGenerationDTO & { model: string }>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
       '/images/generations',
@@ -32,7 +36,9 @@ export class ImagesService {
     );
   }
 
-  async siliconflowGenerations(params: SiliconflowGenerationDTO): Promise<GenerationResult> {
+  async siliconflowGenerations(userId: number, params: SiliconflowGenerationDTO): Promise<GenerationResult> {
+    await this.userService.checkUsage(userId, 'image');
+
     return this.httpClient.request<GenerationResult, SiliconflowGenerationDTO & { model: string }>(
       this.apiConfig.getConfig(ApiType.SILICONFLOW),
       '/images/generations',

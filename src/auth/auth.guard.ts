@@ -3,20 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY, jwtConstants } from './constants';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
-
-// 类型声明扩展（解决 request.user 的类型问题）
-declare module 'express' {
-  interface Request {
-    user?: JwtPayload; // 明确声明 user 属性类型
-  }
-}
-
-// JWT 负载类型定义
-export interface JwtPayload {
-  sub: string;
-  email: string;
-  name: string;
-}
+import { JwtPayload } from './auth.typs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

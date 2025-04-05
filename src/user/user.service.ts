@@ -5,7 +5,7 @@ import { User, DailyUsage, Prisma } from '@prisma/client';
 const USAGE_LIMITS = {
   free: { image: 10, video: 2 },
   vip1: { image: 50, video: 10 },
-  vip2: { image: 200, video: 50 }
+  vip2: { image: 100, video: 20 }
 };
 
 @Injectable()

@@ -4,11 +4,11 @@ import { Prisma } from '@prisma/client';
 import { Public } from '../auth/constants';
 import { CreateUserDto, UpdateVipDto } from './user.dto';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('create')
   @Public()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUserWithVip(
@@ -26,7 +26,7 @@ export class UserController {
     return this.userService.findUser({ id: Number(id) });
   }
 
-  @Get()
+  @Get('findAll')
   listUsers(
     @Body()
     params: {

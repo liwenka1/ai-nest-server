@@ -3,13 +3,7 @@ import { AuthService } from './auth.service';
 import { Public } from './constants';
 import { SignInDto } from './sign-in.dto';
 import { Request as ExpressRequest } from 'express';
-
-// 定义明确的用户信息返回类型
-interface UserProfile {
-  sub: string;
-  email: string;
-  name: string;
-}
+import { JwtPayload } from './auth.typs';
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +16,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  getProfile(@Request() req: ExpressRequest): UserProfile {
-    return req.user as UserProfile;
+  getProfile(@Request() req: ExpressRequest): JwtPayload {
+    return req.user as JwtPayload;
   }
 }

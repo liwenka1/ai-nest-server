@@ -6,12 +6,12 @@ import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dot';
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
-  @Post('/bigmodel/generations')
+  @Post('bigmodel/generations')
   async bigmodelGenerations(@Body() params: BigmodelVideoGenerationDTO) {
     return this.videosService.bigmodelGenerations(params);
   }
 
-  @Get('/async-result/:id')
+  @Get('async-result/:id')
   async getAsyncResult(@Param() params: AsyncResultDTO) {
     return this.videosService.bigmodelGenerationsResult(params);
   }
