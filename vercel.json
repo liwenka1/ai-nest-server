@@ -2,10 +2,7 @@
   "builds": [
     {
       "src": "src/main.ts",
-      "use": "@vercel/node",
-      "config": {
-        "installCommand": "corepack enable && pnpm install --force"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
