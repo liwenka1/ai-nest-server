@@ -76,8 +76,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "engines": {
-    "pnpm": "9.12.1"
   }
 }
