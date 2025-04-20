@@ -19,7 +19,7 @@ export class VideosService {
   }
 
   async bigmodelGenerations(userId: number, params: BigmodelVideoGenerationDTO): Promise<GenerationResult> {
-    await this.userService.checkUsage(userId, 'image');
+    await this.userService.checkUsage(userId, 'video');
 
     return this.httpClient.request<GenerationResult, { model: string }>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
