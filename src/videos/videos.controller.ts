@@ -16,9 +16,7 @@ export class VideosController {
   }
 
   @Get('async-result/:id')
-  async getAsyncResult(@Param() params: AsyncResultDTO, @Request() req: ExpressRequest) {
-    const userId = (req.user as JwtPayload).sub;
-
-    return this.videosService.bigmodelGenerationsResult(userId, params);
+  async getAsyncResult(@Param() params: AsyncResultDTO) {
+    return this.videosService.bigmodelGenerationsResult(params);
   }
 }
