@@ -4,7 +4,6 @@ import { ApiConfig, ApiType } from '../common/api.config';
 import { HttpClientService } from '../common/http-client.service';
 import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dto';
 import { GenerationResult } from './videos.types';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class VideosService {
@@ -12,15 +11,13 @@ export class VideosService {
 
   constructor(
     private readonly httpClient: HttpClientService,
-    private readonly userService: UserService,
+
     configService: ConfigService
   ) {
     this.apiConfig = new ApiConfig(configService);
   }
 
-  async bigmodelGenerations(userId: number, params: BigmodelVideoGenerationDTO): Promise<GenerationResult> {
-    await this.userService.checkUsage(userId, 'video');
-
+  async bigmodelGenerations(params: BigmodelVideoGenerationDTO): Promise<GenerationResult> {
     return this.httpClient.request<GenerationResult, { model: string }>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
       '/videos/generations', // 使用枚举值
