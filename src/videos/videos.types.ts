@@ -9,6 +9,11 @@ export interface GenerationResult {
   }>;
 }
 
+export enum ApiEndpoint {
+  GENERATIONS = '/videos/generations',
+  ASYNC_RESULT = '/async-result'
+}
+
 export interface RequestConfig<T = unknown> {
   method: Method;
   url: string;

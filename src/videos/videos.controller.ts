@@ -1,24 +1,18 @@
-import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
-import { Request as ExpressRequest } from 'express';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { VideosService } from './videos.service';
-import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dto';
-import { JwtPayload } from '../auth/auth.typs';
+import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dot';
 
 @Controller('videos')
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Post('bigmodel/generations')
-  async bigmodelGenerations(@Body() params: BigmodelVideoGenerationDTO, @Request() req: ExpressRequest) {
-    const userId = (req.user as JwtPayload).sub;
-
-    return this.videosService.bigmodelGenerations(userId, params);
+  async bigmodelGenerations(@Body() params: BigmodelVideoGenerationDTO) {
+    return this.videosService.bigmodelGenerations(params);
   }
 
   @Get('async-result/:id')
-  async getAsyncResult(@Param() params: AsyncResultDTO, @Request() req: ExpressRequest) {
-    const userId = (req.user as JwtPayload).sub;
-
-    return this.videosService.bigmodelGenerationsResult(userId, params);
+  async getAsyncResult(@Param() params: AsyncResultDTO) {
+    return this.videosService.bigmodelGenerationsResult(params);
   }
 }

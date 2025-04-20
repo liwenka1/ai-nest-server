@@ -36,9 +36,7 @@ export class AuthGuard implements CanActivate {
       request.user = {
         sub: payload.sub,
         email: payload.email,
-        name: payload.name,
-        vipLevel: payload.vipLevel,
-        vipExpiresAt: payload.vipExpiresAt
+        name: payload.name
       };
     } catch (error) {
       throw new UnauthorizedException(this.getErrorMessage(error));
