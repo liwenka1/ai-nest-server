@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
 import { VideosService } from './videos.service';
-import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dot';
+import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dto';
 import { JwtPayload } from '../auth/auth.typs';
 
 @Controller('videos')

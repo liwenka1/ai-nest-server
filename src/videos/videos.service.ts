@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiConfig, ApiType } from '../common/api.config';
 import { HttpClientService } from '../common/http-client.service';
-import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dot';
-import { GenerationResult, ApiEndpoint } from './videos.types';
+import { BigmodelVideoGenerationDTO, AsyncResultDTO } from './videos.dto';
+import { GenerationResult } from './videos.types';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class VideosService {
 
     return this.httpClient.request<GenerationResult, { model: string }>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
-      ApiEndpoint.GENERATIONS, // 使用枚举值
+      '/videos/generations', // 使用枚举值
       'POST',
       {
         model: 'cogvideox-flash',
@@ -39,7 +39,7 @@ export class VideosService {
 
     return this.httpClient.request<GenerationResult>(
       this.apiConfig.getConfig(ApiType.BIGMODEL),
-      `${ApiEndpoint.ASYNC_RESULT}/${params.id}`,
+      `/async-result/${params.id}`,
       'GET'
     );
   }
