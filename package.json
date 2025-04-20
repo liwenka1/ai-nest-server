@@ -8,7 +8,7 @@
   "packageManager": "pnpm@9.12.1",
   "scripts": {
     "build": "nest build",
-    "vercel-build": "npx prisma generate && nest build",
+    "vercel-build": "prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
