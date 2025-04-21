@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsIn, IsInt, Min, Max, IsBase64, IsUUID } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsIn, IsInt, Min, Max, IsBase64, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class VideoGenerationBaseDTO {
@@ -8,6 +8,22 @@ export class VideoGenerationBaseDTO {
   })
   @IsString()
   prompt: string;
+
+  @ApiProperty({
+    example: 'https://aigc-files.bigmodel.cn/api/cogview/2025030623435751a6227acd6f4084_0.png',
+    description: '视频生成图片'
+  })
+  @IsOptional()
+  @IsString()
+  image_url?: string;
+
+  @ApiProperty({
+    example: true,
+    description: '是否有声音'
+  })
+  @IsOptional()
+  @IsBoolean()
+  with_audio?: boolean;
 
   @ApiProperty({
     example: 'low quality, blurry',
@@ -23,8 +39,9 @@ export class VideoGenerationBaseDTO {
     example: '768x432',
     description: '视频分辨率'
   })
+  @IsOptional()
   @IsIn(['512x512', '768x432', '1024x576'])
-  image_size: string;
+  image_size?: string;
 
   @ApiProperty({
     minimum: 1,
@@ -32,17 +49,19 @@ export class VideoGenerationBaseDTO {
     example: 1,
     description: '生成视频数量'
   })
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(2)
-  batch_size: number;
+  batch_size?: number;
 
   @ApiProperty({
     example: 42,
     description: '随机种子'
   })
+  @IsOptional()
   @IsNumber()
-  seed: number;
+  seed?: number;
 
   @ApiProperty({
     example: 24,
@@ -50,10 +69,11 @@ export class VideoGenerationBaseDTO {
     minimum: 12,
     maximum: 60
   })
+  @IsOptional()
   @IsInt()
   @Min(12)
   @Max(60)
-  num_inference_steps: number;
+  num_inference_steps?: number;
 
   @ApiProperty({
     example: 7.5,
@@ -61,10 +81,11 @@ export class VideoGenerationBaseDTO {
     minimum: 1,
     maximum: 20
   })
+  @IsOptional()
   @IsNumber()
   @Min(1)
   @Max(20)
-  guidance_scale: number;
+  guidance_scale?: number;
 
   @ApiProperty({
     required: false,
@@ -92,6 +113,6 @@ export class AsyncResultDTO {
     example: '550e8400-e29b-41d4-a716-446655440000',
     description: '异步任务ID'
   })
-  @IsUUID()
+  @IsString()
   id: string;
 }
